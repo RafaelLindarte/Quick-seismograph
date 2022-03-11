@@ -1,0 +1,7 @@
+menu "LOCAL SERVER CONFIGURATION"
+	config WS_MAX_CONN
+        int "Maximal Websocket connections"
+        default 1
+        help
+        	Maximun number of websocket clients.
+endmenu

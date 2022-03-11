@@ -1,0 +1,25 @@
+menu "WIFI CONTROLLER CONFIGURATION"
+
+    config AP_WIFI_SSID
+        string "Access Point WiFi SSID"
+        default "Quick-Node#"
+        help
+            SSID (network name) for the example to connect to.
+
+    config AP_WIFI_PASSWORD
+        string "Access Point WiFi Password"
+        default "12345678"
+        help
+            WiFi password (WPA or WPA2) for the example to use.
+    config AP_WIFI_CHANNEL
+        int "Access Point Wifi Channel"
+        default 1
+        help
+            Wifi Channel for AP.        
+	config AP_MAX_STA_CONN
+        int "Maximal STA connections"
+        default 1
+        help
+            Max number of the STA connects to AP.
+	
+endmenu
