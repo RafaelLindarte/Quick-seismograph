@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Subsuelo3d | QUICK</title>
+
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/template_reduced.css">
+  <link rel="stylesheet" href="css/bootstrap-4.min.css">
+  <link rel="stylesheet" href="css/toastr.min.css">
+  <link rel="stylesheet" href="css/ion.rangeSlider.min.css">
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper">
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container">
+            <div class="card card-blue">
+                <div class="card-header">
+                <h1 class="m-1 text-center">QUICK SEISMOGRAPH</h1>
+                </div>
+            </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <!-- Main content -->
+        <section class="content">
+        <div class="container">
+            <div class="card">
+                <div class="col-lg-0">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#guide" data-toggle="tab">User Guide</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#testing" data-toggle="tab">Testing</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#aquiring" data-toggle="tab">Aquiring</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#harvesting" data-toggle="tab">Harvesting</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- USER GUIDE - TAB -->
+                            <div class="active tab-pane" id="guide">
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 1</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                                Clave el modulo firmemente en el terreno y enciendalo
+                                                a través del interruptor lateral,
+                                                <b>(Se encenderá el led superior).</b>                 
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 2</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            Espere un minuto hasta que el led comience a titilar a un periodo de 1 segundo.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 3</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            Dirijase a la pestaña <b>Testing</b>. A continuación, presione el boton <b>Scan</b>
+                                            y obtendra una lista con los nodos disponibles. Selecione el nodo que desee probar 
+                                            y obtendra una grafica en tiempo real del nodo.
+                                            <b>Haga esto para todos los nodos</b>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 4</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            En la pestaña <b>Acquiring</b> selecione nuevo proyecto
+                                            y diligencie los parametros de configuración(ej: cantidad de canales o duracion del registro de la medida).
+                                            Una vez realizada pulse <b>OK</b> al final.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 5</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            Ubique el nodo trigger en el punto escogido,
+                                            seleccione conectar Trigger y luego nuevo punto de disparo.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 6</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            Puede realizar tantos disparos en cada punto de disparo y tantos puntos de disparo como desee a lo largo del arreglo.
+                                            Al finalizar seleccione <b>Finalizar Proyecto</b>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-0">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title m-0">STEP 7</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-title">INCLUIR IMAGEN</h4>
+                                            <p class="card-text">
+                                            En la pestaña <b>Harvesting</b> seleccione cada nodo,
+                                            acercandose al mismo para cosechar los datos.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TESTING - TAB -->
+                            <div class="tab-pane" id="testing">
+                                <div class="col-lg-0">
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="m-1 text-center">Operational Verification</h3>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="m-1 text-center">
+                                            Check the nodes operative status before starting the measurement.
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <h5 class="m-1 text-center">
+                                            Press <b>SCAN</b> to list the available nodes and select the node you want to check.
+                                        </h5>
+                                    </div>
+                                    <div id="cardList" class="card card-primary collapsed-card col-lg-0">
+                                        <div class="card-header">
+                                            <div class="col-0">
+                                                <div class="row">
+                                                    <div class="col-9">
+                                                        <h3 class="card-title m-2">Available Nodes</h3>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button type="button" id="scanButton" class="btn btn-light" data-toggle="modal" data-target="#scanNodesModal"><h4>SCAN</h4></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-tools -->
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+                                            <select multiple id="deviceList" class="form-control"></select>
+                                            <br>
+                                            <div class="col-lg-0">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="card card-outline">
+                                                            <div id="nodeLabel" class="card-title m-2">Selected:</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div id="swapButtons" class="card card-outline">
+                                                            <button id="connectButton" type="button" class="btn btn-block btn-primary" style="visibility: visible;"><h4>Connect</h4></button>
+                                                            <!-- <button id="disconnectButton" type="button" class="btn btn-danger btn-lg" style="visibility: hidden;">Disconnect</button> -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                          <h4 class="text-center">
+                                            <i class="far fa-chart-bar"></i>
+                                            Real Time Data
+                                          </h4>
+                                        </div>
+                                        <div class="card-body">
+                                          <div id="interactive" style="height: 300px;"></div>
+                                        </div>
+                                        <!-- /.card-body-->
+                                      </div>
+                                      <!-- /.card -->                                 
+                                </div>
+                            </div>
+                            <!-- ACQUIRING - TAB -->
+                            <div class="tab-pane" id="aquiring">
+                                <div class="col-lg-0">
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="m-1 text-center"> Measurment Configuration </h3>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="m-1 text-center">
+                                            Fill out the following form according to the measurment needs.
+                                        </h5>
+                                    </div>
+                                    <div>
+                                        <h5 class="m-1 text-center">
+                                            Verify parameters, set trigger sensitivity and start taking shotpoints. 
+                                        </h5>
+                                    </div>
+                                    <form>
+                                        <div class="card-body">
+                                            <div id="form" class="card card-primary collapsed-card">
+                                                <div class="card-header">
+                                                  <h3 class="card-title">New Project</h3>
+                                                  <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
+                                                    </button>
+                                                  </div>
+                                                  <!-- /.card-tools -->
+                                                </div>
+                                                <!-- /.card-header -->
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <div class="custom-control custom-radio">
+                                                                    <input class="custom-control-input" type="radio" id="ActiveMeasurement" name="ModeOperation">
+                                                                    <label for="ActiveMeasurement" class="custom-control-label">Medicion Sismica Activa</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <div class="custom-control custom-radio">
+                                                                    <input class="custom-control-input" type="radio" id="REMI" name="ModeOperation">
+                                                                    <label for="REMI" class="custom-control-label">Medicion REMI</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>                                              
+                                                    <div class="form-group">
+                                                        <label>Nombre del Proyecto</label>
+                                                        <input type="text" class="form-control" id="Name" placeholder="Name your project">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Record Length (s)</label>
+                                                        <select id="recordLength" class="custom-select">
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Number of Nodes</label>
+                                                        <select id="nodeQuantity" class="custom-select">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!-- /.card-body -->
+                                                <div class="card-footer">
+                                                    <button type="button" id="saveButton" class="btn btn-block btn-primary"><h4>Save</h4></button> <!---/.data-card-widget="collapse" -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </form>
+                                    <div class="card card card-primary card-outline col-lg-0">
+                                        <div class="card-header">                            
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <div class="card-title m-0">
+                                                        <b>Parameters:      </b>
+                                                        <span id="nameLabel"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2" id="projectStateButtons">
+                                                    <button type="button" id="startButton" class="btn btn-primary float-right"><h4>Start</h4></button>
+                                                </div>
+                                            </div>   
+                                        </div>                                    
+                                        <div class="card-body">
+                                            <div>
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                      <tr>  
+                                                        <td>
+                                                            Number of nodes:
+                                                            <span id="nodeQuantityLabel"></span>
+                                                        </td>
+                                                        <td>
+                                                            Record Length:
+                                                            <span id="recordLengthLabel"></span>
+                                                        </td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>
+                                                            ShotPoint:
+                                                            <span id="shotPointLabel"></span>
+                                                        </td>
+                                                        <td>
+                                                            Shot:
+                                                            <span id="shotLabel"></span>
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-auto" style="text-align: center;">
+                                                    Trigger Sensitivity
+                                                </div>
+                                                <div>
+                                                    <input id="sensitivity" type="text" name="sensitivity" value="2000">
+                                                </div>
+                                                <div id="shotPointSwap" style="margin-top: 1rem;">
+                                                    <button type="button" id="shotPoint" class="btn btn-block btn-primary" disabled ><h4>New Shotpoint</h4></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->                                  
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                            <!-- HARVESTING - TAB -->
+                            <div class="tab-pane" id="harvesting">
+                                <div class="col-lg-0">
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="m-1 text-center"> Data Collection </h3>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="m-1 text-center">
+                                            Press <b>SCAN</b> to list the available nodes and select the node you want to collect data from.
+                                        </h5>
+                                    </div>
+                                    <div id="cardNodesList" class="card card-primary collapsed-card col-lg-0">
+                                        <div class="card-header">
+                                            <div class="col-0">
+                                                <div class="row">
+                                                    <div class="col-9">
+                                                        <h3 class="card-title m-2">Available Nodes</h3>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button type="button" id="listButton" class="btn btn-light" data-toggle="modal" data-target="#scanNodesModal"><h4>SCAN</h4></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-tools -->
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+                                            <select multiple id="availableList" class="form-control"></select>
+                                            <br>
+                                            <div class="col-lg-0">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="card card-outline">
+                                                            <div id="selectedNodeLabel" class="card-title m-2">Selected:</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div id="changeButtons" class="card card-outline">
+                                                            <button id="collectDataButton" type="button" class="btn btn-block btn-primary" style="visibility: visible;"><h4>Collect</h4></button>
+                                                            <!-- <button id="disconnectButton" type="button" class="btn btn-danger btn-lg" style="visibility: hidden;">Disconnect</button> -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <div>
+                                        <button id="downloadData" type="button" class="btn btn-block btn-primary" style="visibility: visible;"><h4>Download</h4> </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+  <!-- Modal -->
+<div class="modal fade" id="scanNodesModal" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div id="modalOverlay" class="overlay">
+          <i class="fas fa-2x fa-sync fa-spin"></i>
+        </div>
+        <div id="ModalBody" class="modal-body">
+          <h3 class="text-center">Scanning...</h3>
+        </div>
+      </div>
+    </div>
+</div>
+
+<footer class="main-footer">
+    <!-- To the right -->
+    <div class="float-right d-none d-sm-inline">
+        QUICK SEISMOGRAPH
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2022 <a href="#">subsuelo3d</a>.</strong> All rights reserved.
+</footer>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="js/adminlte.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="js/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="js/toastr.min.js"></script>
+<!-- FLOT CHARTS -->
+<script src="js/jquery.flot.js"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="js/jquery.flot.resize.js"></script>
+<script src="js/ion.rangeSlider.min.js"></script>
+<script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+menu "WEBSOCKET CLIENT CONFIGURATION"
+    config WEBSOCKET_URI
+        string "Websocket endpoint URI"
+        default "ws://{ip}:{port}/{path}"
+        help
+            URL of websocket endpoint this example connects to and sends echo.
+endmenu

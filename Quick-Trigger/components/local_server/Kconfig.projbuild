@@ -1,0 +1,21 @@
+menu "LOCAL SERVER CONFIGURATION"
+
+    config LOCAL_SERVER_MDNS_HOST_NAME
+        string "mDNS Host Name"
+        default "http://subsuelo3d.quick/"
+        help
+            Specify the domain name used in the mDNS service.
+            Note that webpage also take it as a part of URL where it will send GET/POST requests to.
+
+    config HTTP_SERVER_WEB_MOUNT_POINT
+        string "Website mount point in VFS"
+        default "/storage"
+        help
+            Specify the mount point in VFS.
+            
+	config WS_MAX_CONN
+        int "Maximal Websocket connections"
+        default 2
+        help
+        	Maximuin number of websocket clients allowed.
+endmenu
