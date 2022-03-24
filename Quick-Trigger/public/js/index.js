@@ -4,9 +4,17 @@ var Toast = Swal.mixin({
   timer: 2000
 });
 var payload;
-var nodeWS;
+var harvestWS;
+var testWS;
 var triggerWS;
-var nodeCommand;
+
+function delay(delayInms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(2);
+    }, delayInms);
+  });
+}
 /************************************************
 *
 *                 HTTP REQUESTS                 *
@@ -126,7 +134,12 @@ disconnectNode.appendChild(disconnectButtonText);
 const disconnectFromNode = async() => {
   var ssid = $( "#availableList option:selected" ).text();
   try {
-    nodeWS.close()
+    var testWSPayload = {
+      command: 'disableAsync'
+    }
+    testWS.send(JSON.stringify(testWSPayload));
+    testWS.close();
+    await delay(1000);
     var response = await sendHttpRequest('GET', 'http://124.213.16.29:80/api/v1/disconnectNode');
     if(response.status == 500){
       Toast.fire({
@@ -161,12 +174,11 @@ const connectToNode = async() => {
   }
   try {
     var response = await sendHttpRequest('POST', 'http://124.213.16.29:80/api/v1/connectNode', {ssid:ssid.trim()});
-    nodeWS = new WebSocket("ws://124.213.16.29:94/ws/connectNode");
-    nodeWS.onopen = nodeOnOpen;
-    nodeWS.onclose = nodeOnClose;
-    nodeWS.onerror = nodeOnError;
-    nodeWS.onmessage = nodeOnMessage;
-    nodeCommand = "test";
+    testWS = new WebSocket("ws://124.213.16.29:94/ws/connectNode");
+    testWS.onopen = testOnOpen;
+    testWS.onclose = testOnClose;
+    testWS.onerror = testOnError;
+    testWS.onmessage = testOnMessage;
     if(response.status == 500){
       // nodeWS.close()
       Toast.fire({
@@ -217,11 +229,7 @@ const scanNodes = async() => {
 
     });
     for (let index = 0; index < document.getElementById("deviceList").length ; index++) {
-      document.getElementById("deviceList").children.item(index).onclick = ()=>{
-        // console.log(document.getElementById("deviceList").children.item(index).innerText);
-        document.getElementById("nodeLabel").innerHTML = "Selected: \n"+document.getElementById("deviceList").children.item(index).innerText;
-      }
-      document.getElementById("deviceList").children.item(index).onselect = ()=>{
+      document.getElementById("deviceList").onchange = ()=>{
         // console.log(document.getElementById("deviceList").children.item(index).innerText);
         document.getElementById("nodeLabel").innerHTML = "Selected: \n"+document.getElementById("deviceList").children.item(index).innerText;
       }
@@ -327,9 +335,14 @@ const saveConfig = async() => {
   document.getElementById("nodeQuantityLabel").textContent = document.getElementById("nodeQuantity").value;
   document.getElementById("shotPointLabel").textContent = 0;
   document.getElementById("shotLabel").textContent = 0;
+  let date = new Date();
+  let day = date.getDate()
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
   triggerFile["config"]={
     recordLength: document.getElementById("recordLength").value,
-    nodeQuantity: document.getElementById("nodeQuantity").value
+    nodeQuantity: document.getElementById("nodeQuantity").value,
+    date: (month < 10) ? `${day}-0${month}-${year}` : `${day}-${month}-${year}` 
   }
 }
 const startMeasurement = async()=>{
@@ -373,6 +386,7 @@ var triggerWSPayload = {
   document.getElementById("shotLabel").textContent = 0;
   shotPointButton.remove();
   document.getElementById("shotPointSwap").append(finishShotPointButton);
+  stopMeasurementButton.disabled = true;
 }
 
 const finishShotPoint = async()=>{
@@ -382,6 +396,7 @@ const finishShotPoint = async()=>{
   triggerWS.send(JSON.stringify(triggerWSPayload));
   finishShotPointButton.remove();
   document.getElementById("shotPointSwap").append(shotPointButton);
+  stopMeasurementButton.disabled = false;
 }
 
 $('#sensitivity').ionRangeSlider({
@@ -412,6 +427,28 @@ stopCollectingDataButton.setAttribute("id","stopDataButton");
 stopCollectingDataButtonText.innerText = "Stop";
 stopCollectingDataButton.appendChild(stopCollectingDataButtonText);
 const downloadButton = document.getElementById("downloadData");
+
+if(localStorage.length > 0){
+  for (let index = 0; index < localStorage.length; index++) {
+    var title = localStorage.key(index).split("-")[0]
+    var numberShotpoints = Object.keys(JSON.parse(localStorage.getItem(localStorage.key(index)))).length - 1;
+    var date = JSON.parse(localStorage.getItem(localStorage.key(0))).config.date;
+    var tdTitle = document.createElement("td");
+    tdTitle.textContent = title;
+    var tdShotpoints = document.createElement("td");
+    tdShotpoints.textContent = `${numberShotpoints}`;
+    var tdDate = document.createElement("td");
+    tdDate.textContent = date;
+    var trFile = document.createElement("tr");
+    trFile.setAttribute("id",`file${index}`)
+    trFile.append(tdTitle);
+    trFile.append(tdShotpoints);
+    trFile.append(tdDate);
+    var table = document.getElementById("measurementsTable");
+    table.append(trFile);
+  }
+}
+
 var nodeFile = {};
 
 const downloadFile = () =>{
@@ -424,21 +461,14 @@ const downloadFile = () =>{
   URL.revokeObjectURL(href);
   anchor.remove();
 }
-function delay(delayInms) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(2);
-    }, delayInms);
-  });
-}
 const stopHarvesting = async() => {
   var ssid = $( "#availableList option:selected" ).text();
   try {
-    var nodeWSPayload = {
+    var harvestWSPayload = {
       command: 'disableAsync'
     }
-    nodeWS.send(JSON.stringify(nodeWSPayload));
-    await delay(2000);
+    harvestWS.send(JSON.stringify(harvestWSPayload));
+    await delay(1000);
     var response = await sendHttpRequest('GET', 'http://124.213.16.29:80/api/v1/disconnectNode');
     if(response.status == 500){
       Toast.fire({
@@ -472,13 +502,12 @@ const startHarvesting = async() => {
     return;
   }
   try {
-    nodeCommand = "harvest";
     var response = await sendHttpRequest('POST', 'http://124.213.16.29:80/api/v1/connectNode', {ssid:ssid.trim()});
-    nodeWS = new WebSocket("ws://124.213.16.29:94/ws/connectNode");
-    nodeWS.onopen = nodeOnOpen;
-    nodeWS.onclose = nodeOnClose;
-    nodeWS.onerror = nodeOnError;
-    nodeWS.onmessage = nodeOnMessage;
+    harvestWS = new WebSocket("ws://124.213.16.29:94/ws/connectNode");
+    harvestWS.onopen = harvestOnOpen;
+    harvestWS.onclose = harvestOnClose;
+    harvestWS.onerror = harvestOnError;
+    harvestWS.onmessage = harvestOnMessage;
     if(response.status == 500){
       // ws.close()
       Toast.fire({
@@ -531,11 +560,7 @@ const listNodes = async() => {
 
     });
     for (let index = 0; index < document.getElementById("availableList").length ; index++) {
-      document.getElementById("availableList").children.item(index).onclick = ()=>{
-        console.log(document.getElementById("availableList").children.item(index).innerText);
-        document.getElementById("selectedNodeLabel").innerHTML = "Selected: \n"+document.getElementById("availableList").children.item(index).innerText;
-      }
-      document.getElementById("availableList").children.item(index).onselect = ()=>{
+      document.getElementById("availableList").onchange = ()=>{
         console.log(document.getElementById("availableList").children.item(index).innerText);
         document.getElementById("selectedNodeLabel").innerHTML = "Selected: \n"+document.getElementById("availableList").children.item(index).innerText;
       }
@@ -602,98 +627,155 @@ var triggerOnMessage = function(event){
 }
 /************************************************
 *                                               *
-*           WEBSOCKET EVENTS NODE               *
+*       WEBSOCKET EVENTS NODE - HARVEST         *
 *                                               *
 *************************************************/
+var currentShotPoint = 1;
+var currentShot = 0;
+var nodeData = [];
+var testingData = [];
 var measurementData;
 var measurementShotPoints;
-var nodeOnOpen = function() {
-  if(["harvest"].indexOf(nodeCommand) != -1){
-    // var ssid = $( "#availableList option:selected" ).text();
-    console.log('CONNECTED TO NODE');
-    // payload = `${ssid.trim()}/`;
-    var nodeWSPayload = {
-      command: 'enableAsync'
-    }
-    nodeWS.send(JSON.stringify(nodeWSPayload));
-    measurementData = JSON.parse(localStorage.getItem(`${document.getElementById("Name").value}-Quick-Trigger`));
-    measurementShotPoints = Object.keys(measurementData);
+var harvestOnOpen = function() {
+  // var ssid = $( "#availableList option:selected" ).text();
+  console.log('CONNECTED TO NODE');
+  // payload = `${ssid.trim()}/`;
+  var harvestWSPayload = {
+    command: 'enableAsync'
   }
-  else{
-    var nodeWSPayload = {
-      command: 'testNode'
-    }
-    nodeWS.send(JSON.stringify(nodeWSPayload));
-  }
-  
+  harvestWS.send(JSON.stringify(harvestWSPayload));
+  measurementData = JSON.parse(localStorage.getItem(`${document.getElementById("Name").value}-Quick-Trigger`));
+  measurementShotPoints = Object.keys(measurementData);
 };
 
-var nodeOnClose = function() {
+var harvestOnClose = function() {
   console.log('CLOSED');
-  nodeWS = null;
-  localStorage.setItem(`${document.getElementById("Name").value}-${$( "#availableList option:selected" ).text()}`, JSON.stringify(nodeFile));
+  harvestWS = null;
+  localStorage.setItem(`${document.getElementById("Name").value}-${$( "#availableList option:selected" ).text().trim()}`, JSON.stringify(nodeFile));
 };
 
-var nodeOnError = function(error){
+var harvestOnError = function(error){
   console.log(error);
 }
 
-var currentShotPoint = 1;
-var currentShot = 0;
-var nodeOnMessage = function(event){
-  console.log(event.data);
-  console.log(JSON.parse(event.data).command);
-  if (["enableAsync"].indexOf(JSON.parse(event.data).command) != -1) {
+var shotpoint,shot,time,secCounter;
+var harvestOnMessage = function(event){
+  try {
+    if (["enableAsync"].indexOf(JSON.parse(event.data).command) != -1) {
+      currentShotPoint = 1;
+      currentShot = 0;
+      nodeFile[`shotPoint${currentShotPoint}`]={};
+      // var shotpoint = measurementData[Object.keys(measurementData)[currentShotPoint]];
+      // console.log(shotpoint[Object.keys(shotpoint)[currentShot]]);
+      // var {time,secCounter} = shotpoint[Object.keys(shotpoint)[currentShot]];
+      // nodeFile[`shotPoint${currentShotPoint}`]={};
+      // console.log(`shotPoint: ${currentShotPoint}  shot: ${currentShot}`);
+      // if((typeof(measurementData) == 'object') && currentShotPoint < measurementShotPoints.length){
+      //   if (currentShot < Object.keys(shotpoint).length) {
+      //     console.log(time,secCounter)
+      //     var harvestWSPayload = {
+      //       command: 'harvestShotPoint',
+      //       params:{
+      //         time,
+      //         secCounter,
+      //         recordLength: measurementData.config.recordLength
+      //       }
+      //     }
+      //     harvestWS.send(JSON.stringify(harvestWSPayload));
+      //   }
+      // }
+    }
+    else if(["disableAsync"].indexOf(JSON.parse(event.data).command) != -1){
+      harvestWS.close();
+    }else if(["idle"].indexOf(JSON.parse(event.data).command) != -1){
+      if(nodeData.length > 0)
+      {
+        nodeFile[`shotPoint${currentShotPoint}`][`shot${currentShot}`] ={
+          data: nodeData
+        };
+        console.log("hola");
+        console.log(nodeData);
+        nodeData = [];
+      }
+      shotpoint = measurementData[Object.keys(measurementData)[currentShotPoint]];
+      if (currentShot >= Object.keys(shotpoint).length) {
+        currentShot = 0;
+        currentShotPoint++;
+        console.log("cambio de shotpoint");
+        if(currentShotPoint >=  measurementShotPoints.length){
+          console.log("end transmission")
+          stopCollectingDataButton.click();
+          return;
+        }
+        nodeFile[`shotPoint${currentShotPoint}`]={};
+      }
+      shot = shotpoint[Object.keys(shotpoint)[currentShot]];
+      console.log("shot",shot);
+      time = shotpoint[Object.keys(shotpoint)[currentShot]].time;
+      secCounter = shotpoint[Object.keys(shotpoint)[currentShot]].secCounter
+      console.log(`shotPoint: ${currentShotPoint}  shot: ${currentShot}`);
+      console.log(time,secCounter)
+      console.log("hola2");
+      var harvestWSPayload = {
+        command: 'harvestShotPoint',
+        params:{
+          time,
+          secCounter,
+          recordLength: measurementData.config.recordLength
+        }
+      }
+      console.log("hola3");
+      harvestWS.send(JSON.stringify(harvestWSPayload));
+      currentShot++;
+    }  
+  } catch (error) {
+    if(!event.data.includes("command"))
+    {
+      nodeData = nodeData.concat(event.data.split("\r\n"));
+    }
+  } 
+}
+/************************************************
+*                                               *
+*       WEBSOCKET EVENTS NODE - TESTING         *
+*                                               *
+*************************************************/
+var testOnOpen = function() {
+  console.log('CONNECTED TO NODE');
+  // payload = `${ssid.trim()}/`;
+  var testWSPayload = {
+    command: 'enableAsync'
+  }
+  testWS.send(JSON.stringify(testWSPayload));  
+};
 
-    if(["harvest"].indexOf(nodeCommand) != -1){
-      if((typeof(measurementData) == 'object') && currentShotPoint < measurementShotPoints.length){
-        var shotpoint = measurementData[Object.keys(measurementData)[currentShotPoint]]
-        console.log(shotpoint);
-        if (currentShot < Object.keys(shotpoint).length) {
-          var {time,secCounter} = shotpoint[Object.keys(shotpoint)[currentShot]];
-          console.log(time,secCounter)
-          var nodeWSPayload = {
-            command: 'harvestShotPoint',
-            params:{
-              time,
-              secCounter,
-              recordLength: measurementData.config.recordLength
-            }
-          }
-          nodeWS.send(JSON.stringify(nodeWSPayload));
-        }
-      }
-    }
-    else{
-      var nodeWSPayload = {
-        command: 'testMode'
-      }
-      nodeWS.send(JSON.stringify(nodeWSPayload));
-    }
-  }
-  else if(["disableAsync"].indexOf(JSON.parse(event.data).command) != -1){
-    nodeWS.close();
-  }
-  if(["harvestNode"].indexOf(JSON.parse(event.data).command) != -1){
-    if((typeof(measurementData) == 'object') && currentShotPoint < measurementShotPoints.length){
-      var shotpoint = measurementData[Object.keys(measurementData)[currentShotPoint]]
-      console.log(shotpoint);
-      if (currentShot < Object.keys(shotpoint).length) {
-        var {time,secCounter} = shotpoint[Object.keys(shotpoint)[currentShot]];
-        console.log(time,secCounter)
-        var nodeWSPayload = {
-          command: 'harvestShotPoint',
-          params:{
-            time,
-            secCounter,
-            recordLength: measurementData.config.recordLength
-          }
-        }
-        nodeWS.send(JSON.stringify(nodeWSPayload));
-      }
-    }
-  }
-  // console.log(event.data.split("/"));
-  // payload = payload + event.data
+var testOnClose = function() {
+  console.log('CLOSED');
+  testWS = null;
+};
+
+var testOnError = function(error){
+  console.log(error);
 }
 
+var testOnMessage = function(event){
+  try {
+    if (["enableAsync"].indexOf(JSON.parse(event.data).command) != -1) {
+      var testWSPayload = {
+        command: 'testMode'
+      }
+      testWS.send(JSON.stringify(testWSPayload)); 
+    }
+    else if(["disableAsync"].indexOf(JSON.parse(event.data).command) != -1){
+
+    }else if(["idle"].indexOf(JSON.parse(event.data).command) != -1){
+      console.log("hola");
+    }  
+  } catch (error) {
+    console.log(event.data.split("\r\n"));
+    if(!event.data.includes("command"))
+    {
+      testingData = testingData.concat(event.data.split("\r\n"));
+    }
+  } 
+}

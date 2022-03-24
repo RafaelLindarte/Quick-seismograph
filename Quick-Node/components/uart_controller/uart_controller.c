@@ -87,7 +87,7 @@ void uart_controller_task(void *pvParameters)
 			char command[50];
 			xQueueReceive(uartCommandQueue,(void*)command,portMAX_DELAY);
 			ESP_LOGW(TAG5,"%s",command);
-//			uart_write_bytes(CONFIG_UART_PORT_NUM, (const char *) command, strlen(command));
+			uart_write_bytes(CONFIG_UART_PORT_NUM, (const char *) command, strlen(command));
 //
 		}
 		else if(bits & START_RECIEVING_DATA){

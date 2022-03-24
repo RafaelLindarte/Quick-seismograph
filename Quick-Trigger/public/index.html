@@ -32,12 +32,12 @@
         <div class="container">
             <div class="card">
                 <div class="col-lg-0">
-                    <div class="card-header p-2">
+                    <div class="card-header p-0">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link active" href="#guide" data-toggle="tab">User Guide</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#testing" data-toggle="tab">Testing</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#aquiring" data-toggle="tab">Aquiring</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#harvesting" data-toggle="tab">Harvesting</a></li>
+                            <li class="col-auto nav-item"><a class="nav-link active" href="#guide" data-toggle="tab">User Guide</a></li>
+                            <li class="col-auto nav-item"><a class="nav-link" href="#testing" data-toggle="tab">Testing</a></li>
+                            <li class="col-auto nav-item"><a class="nav-link" href="#aquiring" data-toggle="tab">Aquiring</a></li>
+                            <li class="col-auto nav-item"><a class="nav-link" href="#harvesting" data-toggle="tab">Harvesting</a></li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body">
@@ -308,7 +308,7 @@
                                                     <tbody>
                                                       <tr>  
                                                         <td>
-                                                            Number of nodes:
+                                                            Nodes:
                                                             <span id="nodeQuantityLabel"></span>
                                                         </td>
                                                         <td>
@@ -355,6 +355,32 @@
                                             <h3 class="m-1 text-center"> Data Collection </h3>
                                         </div>
                                     </div>
+                                    <br>
+                                    <div class="card card-primary col-lg-0">
+                                        <div class="card-header">
+                                            <div class="col-0">
+                                                <h5 class="m-1 text-center">Previous Measurements</h5>
+                                            </div>
+                                        </div>
+                                        <!-- Table row -->
+                                        <div class="row">
+                                            <div class="col-12 table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Project Name</th>
+                                                            <th>Shotpoints</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="measurementsTable">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
                                     <div>
                                         <h5 class="m-1 text-center">
                                             Press <b>SCAN</b> to list the available nodes and select the node you want to collect data from.
@@ -364,7 +390,7 @@
                                         <div class="card-header">
                                             <div class="col-0">
                                                 <div class="row">
-                                                    <div class="col-9">
+                                                    <div class="col-8">
                                                         <h3 class="card-title m-2">Available Nodes</h3>
                                                     </div>
                                                     <div class="col-2">

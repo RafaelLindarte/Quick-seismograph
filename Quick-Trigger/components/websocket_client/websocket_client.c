@@ -8,6 +8,7 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_websocket_client.h"
+#include "cJSON.h"
 
 #include "local_server.h"
 #include "wifi_controller.h"
@@ -55,10 +56,20 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
 //            vTaskDelay(pdMS_TO_TICKS(100));
             free(dataRecievedFromClient);
         }
+        if (data->op_code == 0x0A) {
+        	cJSON *pong_commando_obj = cJSON_CreateObject();
+        	cJSON_AddItemToObject(pong_commando_obj,"command",cJSON_CreateString("idle"));
+			char * pong_flag = cJSON_Print(pong_commando_obj);
+//            ESP_LOGI(TAG4, "Data 2: %s %d",dataRecievedFromClient,data->data_len);//+1
+			xQueueSend(websocketDataQueue,(void *)pong_flag, pdMS_TO_TICKS(10));
+//            vTaskDelay(pdMS_TO_TICKS(100));
+		}
         break;
     case WEBSOCKET_EVENT_CLOSED:
     	ESP_LOGI(TAG4, "WEBSOCKET_EVENT_CLOSED");
-    	xEventGroupSetBits(local_server_event_group,STOP_NODE_WS_ASYNC_DATA);
+    	if(node_ws_async_data_task_handler != NULL){
+        	xEventGroupSetBits(local_server_event_group,STOP_NODE_WS_ASYNC_DATA);
+    	}
     	break;
     case WEBSOCKET_EVENT_ERROR:
         ESP_LOGI(TAG4, "WEBSOCKET_EVENT_ERROR");
@@ -72,6 +83,7 @@ void websocket_client_task(void *pvParameters)
 	websocket_cfg.buffer_size = WEBSOCKET_BUF_SIZE;
     websocket_cfg.uri = CONFIG_WEBSOCKET_URI;
     websocket_cfg.disable_auto_reconnect = true;
+    websocket_cfg.ping_interval_sec = 3;
     esp_websocket_client_handle_t client  = NULL;
     websocketCommandQueue = xQueueCreate(1,150);
     websocketDataQueue = xQueueCreate(20,WEBSOCKET_BUF_SIZE+1);

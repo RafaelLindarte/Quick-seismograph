@@ -47,7 +47,6 @@ static const size_t max_clients = CONFIG_WS_MAX_CONN;
 struct async_resp_arg {
     httpd_handle_t hd;
     int fd;
-    char *data;
 };
 
 
@@ -131,12 +130,19 @@ static esp_err_t ws_connect_handler(httpd_req_t *req)
 		if (ws_pkt.type == HTTPD_WS_TYPE_TEXT && strcmp(command,"harvestShotPoint") == 0) {
 			cJSON *parameters = cJSON_GetObjectItem(root, "params");
 			char * time = cJSON_GetArrayItem(parameters, 0)->valuestring;
-			char *secCounter = cJSON_GetArrayItem(parameters, 1)->valuestring;
+			char *sec_counter = cJSON_GetArrayItem(parameters, 1)->valuestring;
 			char *record_length = cJSON_GetArrayItem(parameters, 2)->valuestring;
 			xEventGroupSetBits(uart_controller_event_group,SEND_COMMAND);
 			char command[1][50];
-			sprintf(command[0],"p%s,%s,%s,3,-10000,0,2.0,3,-20000,0,2.0,3",time,secCounter,record_length);
+			sprintf(command[0],"p%s,%s,%s,3,-10000,0,2.0,3,-20000,0,2.0,3",time,sec_counter,record_length);
 			ESP_LOGI(TAG3, "shot command: %s",command[0]);
+			xQueueSend(uartCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
+		}
+		else if (ws_pkt.type == HTTPD_WS_TYPE_TEXT && strcmp(command,"testMode") == 0) {
+			xEventGroupSetBits(uart_controller_event_group,SEND_COMMAND);
+			char command[1][50];
+			strcpy(command[0],"t");
+			ESP_LOGI(TAG3, "command: %s",command[0]);
 			xQueueSend(uartCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
 		}
 		else if (ws_pkt.type == HTTPD_WS_TYPE_TEXT && strcmp(command,"enableAsync") == 0) {
@@ -146,6 +152,11 @@ static esp_err_t ws_connect_handler(httpd_req_t *req)
 		}
 		else if (ws_pkt.type == HTTPD_WS_TYPE_TEXT && strcmp(command,"disableAsync") == 0) {
 			ESP_LOGI(TAG3, "Received COMMAND: %s",(char*)ws_pkt.payload);
+			xEventGroupSetBits(uart_controller_event_group,SEND_COMMAND);
+			char command[1][50];
+			strcpy(command[0],"r");
+			ESP_LOGI(TAG3, "command: %s",command[0]);
+			xQueueSend(uartCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
 			xEventGroupSetBits(uart_controller_event_group,STOP_RECIEVING_DATA);
 			xEventGroupSetBits(local_server_event_group,STOP_WS_ASYNC_DATA);
 		}
@@ -172,34 +183,29 @@ void ws_async_data_task(void *pvParameters)
 					struct async_resp_arg *resp_arg = malloc(sizeof(struct async_resp_arg));
 					resp_arg->hd = *server;
 					resp_arg->fd = sock;
-					resp_arg->data = (char*) malloc(BUF_SIZE+1);
-					memset(resp_arg->data,0,BUF_SIZE+1);
-					if(( xQueueReceive(uartQueue,(void*)resp_arg->data,portMAX_DELAY) == pdPASS )){
-						ESP_LOGI(TAG3,"NODE ---<<<< %s",resp_arg->data);
-//						if (httpd_queue_work(resp_arg->hd, data_frame, resp_arg) != ESP_OK) {
-//							ESP_LOGE(TAG3, "httpd_queue_work failed!");
-//							break;
-//						}
-						httpd_ws_frame_t ws_pkt;
-						memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-						ws_pkt.payload = (uint8_t *)resp_arg->data;
-						ws_pkt.len = strlen(resp_arg->data);
+					httpd_ws_frame_t ws_pkt;
+					memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+					char * rxBuffer = (char*) malloc(BUF_SIZE+1);
+					if(( xQueueReceive(uartQueue,(void*)rxBuffer,portMAX_DELAY) == pdPASS )){
+						ESP_LOGI(TAG3,"NODE ---<<<< %s",rxBuffer);
+						ws_pkt.payload = (uint8_t *)rxBuffer;
+						ws_pkt.len = strlen(rxBuffer);
 						ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-
 						esp_err_t resp = httpd_ws_send_frame_async(resp_arg->hd, resp_arg->fd, &ws_pkt);
 						if(resp == ESP_OK){
-							free(resp_arg->data);
+							free(rxBuffer);
 							free(resp_arg);
 						}
 					}
 					vTaskDelay(pdMS_TO_TICKS(10));
 				}
 			}
-		} else {
-			ESP_LOGE(TAG3, "No client connected");
-			vTaskDelete(ws_async_data_task_handler);
-			ws_async_data_task_handler = NULL;
 		}
+//		else {
+//			ESP_LOGE(TAG3, "No client connected");
+//			vTaskDelete(ws_async_data_task_handler);
+//			ws_async_data_task_handler = NULL;
+//		}
 		vTaskDelay(pdMS_TO_TICKS(10));
     }
 }

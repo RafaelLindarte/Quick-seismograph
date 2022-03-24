@@ -220,7 +220,7 @@ void wifi_controller_task( void *pvParameters){
         else if(bits & WIFI_DISCONNECT_FROM_NETWORK){
 			ESP_LOGW(TAG2,"------------------ Wifi Disconnecting to Selected Network -------------- ");
 			xEventGroupClearBits(wifi_controller_event_group,WIFI_DISCONNECT_FROM_NETWORK);
-			vTaskDelay(pdMS_TO_TICKS(2500));
+			vTaskDelay(pdMS_TO_TICKS(1000));
 			if(connect_sta_status == ESP_OK){
 				connect_sta_status = wifi_disconnect_sta();
 			}

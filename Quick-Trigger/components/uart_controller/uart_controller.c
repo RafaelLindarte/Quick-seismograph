@@ -35,7 +35,7 @@ void rx_task(void *pvParameters)
 		uart_get_buffered_data_len(CONFIG_UART_PORT_NUM, (size_t*)&length);
 		if(length > 0){
 			const int rxBytes = uart_read_bytes(CONFIG_UART_PORT_NUM, data, UART_BUF_SIZE,pdMS_TO_TICKS(UART_BUF_SIZE));
-			if (rxBytes > 0) {
+			if (rxBytes > 1) {
 				data = (char *) realloc(data,UART_BUF_SIZE+1);
 				data[rxBytes] = '\0';
 				ESP_LOGI(TAG5, "Read2 %d bytes: '%s'", rxBytes, data);

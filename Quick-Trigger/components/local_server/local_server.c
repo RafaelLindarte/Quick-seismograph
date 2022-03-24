@@ -255,8 +255,8 @@ static esp_err_t node_ws_connect_handler(httpd_req_t *req)
 		else if (ws_pkt.type == HTTPD_WS_TYPE_TEXT && strcmp(command,"testMode") == 0) {
 			ESP_LOGI(TAG3, "Received COMMAND: %s",(char*)ws_pkt.payload);
 			xEventGroupSetBits(websocket_client_event_group, SEND_DATA_TXT);
-			char command[1][20];
-			strncpy(command[0],"testNode",20);
+			char command[1][150];
+			strncpy(command[0],buf,150);
 			xQueueSend(websocketCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
 
 		}
@@ -304,18 +304,14 @@ void trigger_ws_async_data_task(void *pvParameters)
 					resp_arg->data = (char*) malloc(UART_BUF_SIZE+1);
 					memset(resp_arg->data,0,UART_BUF_SIZE+1);
 					if( ( xQueueReceive(uartQueue,(void*)resp_arg->data,portMAX_DELAY) == pdPASS )){
-						ESP_LOGI(TAG3, "TRIGGER  -> %s", resp_arg->data);
-//						if (httpd_queue_work(resp_arg->hd, data_frame, resp_arg) != ESP_OK) {
-//							ESP_LOGE(TAG3, "httpd_queue_work failed!");
-//							break;
-//						}
+//						ESP_LOGI(TAG3, "TRIGGER  -> %s", resp_arg->data);
 						httpd_ws_frame_t ws_pkt;
 						memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
 						ws_pkt.payload = (uint8_t *)resp_arg->data;
 						ws_pkt.len = strlen(resp_arg->data);
 						ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-
 						esp_err_t resp = httpd_ws_send_frame_async(resp_arg->hd, resp_arg->fd, &ws_pkt);
+//						esp_err_t resp = ESP_OK;
 						if(resp == ESP_OK){
 							free(resp_arg->data);
 							free(resp_arg);
@@ -324,11 +320,12 @@ void trigger_ws_async_data_task(void *pvParameters)
 					vTaskDelay(pdMS_TO_TICKS(10));
 				}
 			}
-		}else {
-			ESP_LOGE(TAG3, "No client connected");
-			vTaskDelete(trigger_ws_async_data_task_handler);
-			trigger_ws_async_data_task_handler = NULL;
 		}
+//		else {
+//			ESP_LOGE(TAG3, "No client connected");
+//			vTaskDelete(trigger_ws_async_data_task_handler);
+//			trigger_ws_async_data_task_handler = NULL;
+//		}
 		vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
@@ -372,11 +369,12 @@ void node_ws_async_data_task(void *pvParameters)
 					vTaskDelay(pdMS_TO_TICKS(10));
 				}
 			}
-		}else {
-			ESP_LOGE(TAG3, "No client connected");
-			vTaskDelete(node_ws_async_data_task_handler);
-			node_ws_async_data_task_handler = NULL;
 		}
+//		else {
+//			ESP_LOGE(TAG3, "No client connected");
+//			vTaskDelete(node_ws_async_data_task_handler);
+//			node_ws_async_data_task_handler = NULL;
+//		}
 		vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
