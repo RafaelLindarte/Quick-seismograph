@@ -714,8 +714,6 @@ var harvestOnMessage = function(event){
       time = shotpoint[Object.keys(shotpoint)[currentShot]].time;
       secCounter = shotpoint[Object.keys(shotpoint)[currentShot]].secCounter
       console.log(`shotPoint: ${currentShotPoint}  shot: ${currentShot}`);
-      console.log(time,secCounter)
-      console.log("hola2");
       var harvestWSPayload = {
         command: 'harvestShotPoint',
         params:{
@@ -724,7 +722,6 @@ var harvestOnMessage = function(event){
           recordLength: measurementData.config.recordLength
         }
       }
-      console.log("hola3");
       harvestWS.send(JSON.stringify(harvestWSPayload));
       currentShot++;
     }  

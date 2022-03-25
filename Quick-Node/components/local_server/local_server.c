@@ -168,6 +168,7 @@ static esp_err_t ws_connect_handler(httpd_req_t *req)
 // Get all clients and send async message
 void ws_async_data_task(void *pvParameters)
 {
+	ESP_LOGE(TAG3, "HOla tarea node");
 	httpd_handle_t* server = (httpd_handle_t *)pvParameters;
     // Send async message to all connected clients that use websocket protocol every 10 seconds
     while (true) {
@@ -187,7 +188,7 @@ void ws_async_data_task(void *pvParameters)
 					memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
 					char * rxBuffer = (char*) malloc(BUF_SIZE+1);
 					if(( xQueueReceive(uartQueue,(void*)rxBuffer,portMAX_DELAY) == pdPASS )){
-						ESP_LOGI(TAG3,"NODE ---<<<< %s",rxBuffer);
+//						ESP_LOGI(TAG3,"NODE ---<<<< %s",rxBuffer);
 						ws_pkt.payload = (uint8_t *)rxBuffer;
 						ws_pkt.len = strlen(rxBuffer);
 						ws_pkt.type = HTTPD_WS_TYPE_TEXT;
@@ -291,6 +292,7 @@ void local_server_task(void *pvParameters)
 			xEventGroupClearBits(local_server_event_group,START_WS_ASYNC_DATA);
 			//----- Code-----//
 			if(ws_async_data_task_handler == NULL){
+				ESP_LOGE(TAG3, "creo async");
 				xTaskCreatePinnedToCore(ws_async_data_task, "ws_async_data_task", 1024*4, (void *)&server, 3, &ws_async_data_task_handler,1);
 			}
 		}
@@ -299,6 +301,7 @@ void local_server_task(void *pvParameters)
 			xEventGroupClearBits(local_server_event_group,STOP_WS_ASYNC_DATA);
 			//----- Code-----//
 			if(ws_async_data_task_handler != NULL){
+				ESP_LOGE(TAG3, "destruyo async");
 				vTaskDelete(ws_async_data_task_handler);
 				ws_async_data_task_handler = NULL;
 			}

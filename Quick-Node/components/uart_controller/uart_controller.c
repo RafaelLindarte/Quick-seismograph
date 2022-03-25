@@ -22,12 +22,20 @@ extern EventGroupHandle_t task_formation_event_group;
 
 
 //------------- UART CONTROLLER TASK -----------------//
+uart_config_t uart_config = {
+	.baud_rate = CONFIG_UART_BAUD_RATE,
+	.data_bits = UART_DATA_8_BITS,
+	.parity    = UART_PARITY_DISABLE,
+	.stop_bits = UART_STOP_BITS_1,
+	.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+	.source_clk = UART_SCLK_APB,
+};
 xQueueHandle uartCommandQueue;
 xQueueHandle uartQueue;
 
 void rx_task(void *pvParameters)
 {
-
+	ESP_LOGE(TAG5, "HOla tarea node2");
     while (true) {
     	char* data = (char*) malloc(BUF_SIZE);
     	int length = 0;
@@ -37,6 +45,7 @@ void rx_task(void *pvParameters)
 			if (rxBytes > 0) {
 				data = (char *) realloc(data,BUF_SIZE+1);//BUF_SIZE+5
 				data[rxBytes] = '\0';
+				ESP_LOGE(TAG5, "uart data");
 //				ESP_LOGI(TAG5, "Read2 %d bytes: '%s'", rxBytes, data);
 				xQueueSend(uartQueue,(void *)data, pdMS_TO_TICKS(10));
 			}
@@ -50,21 +59,6 @@ void rx_task(void *pvParameters)
 //------------ MAIN TASK ----------//
 void uart_controller_task(void *pvParameters)
 {
-	/* Configure parameters of an UART driver,
-	 * communication pins and install the driver */
-	uart_config_t uart_config = {
-		.baud_rate = CONFIG_UART_BAUD_RATE,
-		.data_bits = UART_DATA_8_BITS,
-		.parity    = UART_PARITY_DISABLE,
-		.stop_bits = UART_STOP_BITS_1,
-		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-		.source_clk = UART_SCLK_APB,
-	};
-	int intr_alloc_flags = 0;
-
-	ESP_ERROR_CHECK(uart_driver_install(CONFIG_UART_PORT_NUM, BUF_SIZE * 2, 0, 0, NULL, intr_alloc_flags));
-	ESP_ERROR_CHECK(uart_param_config(CONFIG_UART_PORT_NUM, &uart_config));
-	ESP_ERROR_CHECK(uart_set_pin(CONFIG_UART_PORT_NUM, CONFIG_UART_TXD, CONFIG_UART_RXD, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 	uartCommandQueue = xQueueCreate(1,50);
 	uartQueue = xQueueCreate(20,BUF_SIZE+1);
     ESP_LOGI(TAG5,"----------------------------");
@@ -94,15 +88,26 @@ void uart_controller_task(void *pvParameters)
 			//----- Clear flag -------//
 			xEventGroupClearBits(uart_controller_event_group,START_RECIEVING_DATA);
 			//----- Code-------//
+			/* Configure parameters of an UART driver,
+			 * communication pins and install the driver */
+
+			int intr_alloc_flags = 0;
+
+			ESP_ERROR_CHECK(uart_driver_install(CONFIG_UART_PORT_NUM, BUF_SIZE * 2, 0, 0, NULL, intr_alloc_flags));
+			ESP_ERROR_CHECK(uart_param_config(CONFIG_UART_PORT_NUM, &uart_config));
+			ESP_ERROR_CHECK(uart_set_pin(CONFIG_UART_PORT_NUM, CONFIG_UART_TXD, CONFIG_UART_RXD, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 			if(rx_task_handler == NULL){
-				xTaskCreatePinnedToCore(rx_task, "uart_rx_task", 1024*4, NULL, 3, &rx_task_handler,0);
+				ESP_LOGE(TAG5, "creo uart");
+				xTaskCreatePinnedToCore(rx_task, "uart_rx_task", 1024*4, NULL, 3, &rx_task_handler,1);
 			}
 		}
 		else if(bits & STOP_RECIEVING_DATA){
 			//----- Clear flag -------//
 			xEventGroupClearBits(uart_controller_event_group,STOP_RECIEVING_DATA);
 			//----- Code-------//
+			uart_driver_delete(CONFIG_UART_PORT_NUM);
 			if(rx_task_handler != NULL){
+				ESP_LOGE(TAG5, "destruyo uart");
 				vTaskDelete(rx_task_handler);
 				rx_task_handler = NULL;
 			}

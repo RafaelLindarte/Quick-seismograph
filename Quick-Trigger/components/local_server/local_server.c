@@ -331,6 +331,7 @@ void trigger_ws_async_data_task(void *pvParameters)
 }
 void node_ws_async_data_task(void *pvParameters)
 {
+	ESP_LOGE(TAG3, "HOla tarea trigger");
 	httpd_handle_t* server = (httpd_handle_t *)pvParameters;
     // Send async message to all connected clients that use websocket protocol every 10 seconds
     while (true) {
@@ -349,7 +350,7 @@ void node_ws_async_data_task(void *pvParameters)
 					resp_arg->data = (char*) malloc(WEBSOCKET_BUF_SIZE+1);
 					memset(resp_arg->data,0,WEBSOCKET_BUF_SIZE+1);
 					if(( xQueueReceive(websocketDataQueue,(void*)resp_arg->data,portMAX_DELAY) == pdPASS )){
-						ESP_LOGI(TAG3, "TRIGGER  -> %s", resp_arg->data);
+//						ESP_LOGI(TAG3, "TRIGGER  -> %s", resp_arg->data);
 //						if (httpd_queue_work(resp_arg->hd, data_frame, resp_arg) != ESP_OK) {
 //							ESP_LOGE(TAG3, "httpd_queue_work failed!");
 //							break;
