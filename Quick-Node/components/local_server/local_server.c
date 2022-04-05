@@ -134,7 +134,7 @@ static esp_err_t ws_connect_handler(httpd_req_t *req)
 			char *record_length = cJSON_GetArrayItem(parameters, 2)->valuestring;
 			xEventGroupSetBits(uart_controller_event_group,SEND_COMMAND);
 			char command[1][50];
-			sprintf(command[0],"p%s,%s,%s,3,-10000,0,2.0,3,-20000,0,2.0,3",time,sec_counter,record_length);
+			sprintf(command[0],"p%s,%s,%s",time,sec_counter,record_length);
 			ESP_LOGI(TAG3, "shot command: %s",command[0]);
 			xQueueSend(uartCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
 		}
@@ -157,6 +157,7 @@ static esp_err_t ws_connect_handler(httpd_req_t *req)
 			strcpy(command[0],"r");
 			ESP_LOGI(TAG3, "command: %s",command[0]);
 			xQueueSend(uartCommandQueue,(void *)&command[0], pdMS_TO_TICKS(10));
+			vTaskDelay(pdMS_TO_TICKS(100));
 			xEventGroupSetBits(uart_controller_event_group,STOP_RECIEVING_DATA);
 			xEventGroupSetBits(local_server_event_group,STOP_WS_ASYNC_DATA);
 		}

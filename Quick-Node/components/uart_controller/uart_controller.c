@@ -46,7 +46,7 @@ void rx_task(void *pvParameters)
 				data = (char *) realloc(data,BUF_SIZE+1);//BUF_SIZE+5
 				data[rxBytes] = '\0';
 				ESP_LOGE(TAG5, "uart data");
-//				ESP_LOGI(TAG5, "Read2 %d bytes: '%s'", rxBytes, data);
+				ESP_LOGI(TAG5, "Read2 %d bytes: '%s'", rxBytes, data);
 				xQueueSend(uartQueue,(void *)data, pdMS_TO_TICKS(10));
 			}
 		}
