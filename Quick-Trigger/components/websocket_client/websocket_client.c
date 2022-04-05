@@ -60,9 +60,7 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
         	cJSON *pong_commando_obj = cJSON_CreateObject();
         	cJSON_AddItemToObject(pong_commando_obj,"command",cJSON_CreateString("idle"));
 			char * pong_flag = cJSON_Print(pong_commando_obj);
-//            ESP_LOGI(TAG4, "Data 2: %s %d",dataRecievedFromClient,data->data_len);//+1
 			xQueueSend(websocketDataQueue,(void *)pong_flag, pdMS_TO_TICKS(10));
-//            vTaskDelay(pdMS_TO_TICKS(100));
 		}
         break;
     case WEBSOCKET_EVENT_CLOSED:
@@ -83,7 +81,7 @@ void websocket_client_task(void *pvParameters)
 	websocket_cfg.buffer_size = WEBSOCKET_BUF_SIZE;
     websocket_cfg.uri = CONFIG_WEBSOCKET_URI;
     websocket_cfg.disable_auto_reconnect = true;
-    websocket_cfg.ping_interval_sec = 3;
+    websocket_cfg.ping_interval_sec = 5;
     esp_websocket_client_handle_t client  = NULL;
     websocketCommandQueue = xQueueCreate(1,150);
     websocketDataQueue = xQueueCreate(20,WEBSOCKET_BUF_SIZE+1);

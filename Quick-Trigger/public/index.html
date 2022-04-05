@@ -209,7 +209,8 @@
                                           </h4>
                                         </div>
                                         <div class="card-body">
-                                          <div id="interactive" style="height: 300px;"></div>
+                                          <!-- <div id="interactive" style="height: 300px;"></div> -->
+                                          <div id="chart-testing" class="container"></div>
                                         </div>
                                         <!-- /.card-body-->
                                       </div>
@@ -422,9 +423,24 @@
                                         </div>
                                         <!-- /.card-body -->
                                     </div>
+                                    <div class="form-group">
+                                        <label>Shootpoint</label>
+                                        <select id="id_shootpoint" class="custom-select">
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Shoot</label>
+                                        <select id="id_shoot" class="custom-select">
+                                        </select>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- <div id="interactive" style="height: 300px;"></div> -->
+                                        <div id="chart-harv" class="container"></div>
+                                      </div>
                                     <div>
                                         <button id="downloadData" type="button" class="btn btn-block btn-primary" style="visibility: visible;"><h4>Download</h4> </button>
                                     </div>
+                                    
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
@@ -465,6 +481,7 @@
 
 </div>
 <!-- ./wrapper -->
+<script src="js/highcharts.js"></script>
 
 <!-- jQuery -->
 <script src="js/jquery.min.js"></script>
